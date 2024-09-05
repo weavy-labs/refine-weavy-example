@@ -35,6 +35,10 @@ Refine's hooks and components simplifies the development process and eliminates 
     npm run start
 ```
 
+## Try this example on CodeSandbox
+
+[![Open auth-material-ui example from refine](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/embed/github/weavy-labs/refine/tree/main/examples/nextjs-mui-rest-google?view=preview&theme=dark&codemirror=1)
+
 ## Learn More
 
 To learn more about **Refine**, please check out the [Documentation](https://refine.dev/docs)
