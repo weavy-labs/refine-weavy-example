@@ -7,14 +7,16 @@ import {
   Show,
   TextField,
 } from "@refinedev/antd";
-import { useOne, useShow } from "@refinedev/core";
-import { Typography } from "antd";
+import { useOne, useParsed, useShow } from "@refinedev/core";
+import { WyComments } from "@weavy/uikit-react";
+import { Space, Typography } from "antd";
 
 const { Title } = Typography;
 
 export default function BlogPostShow() {
   const { query: queryResult } = useShow({});
   const { data, isLoading } = queryResult;
+  const { pathname } = useParsed();
 
   const record = data?.data;
 
@@ -27,23 +29,26 @@ export default function BlogPostShow() {
   });
 
   return (
-    <Show isLoading={isLoading}>
-      <Title level={5}>{"ID"}</Title>
-      <NumberField value={record?.id ?? ""} />
-      <Title level={5}>{"Title"}</Title>
-      <TextField value={record?.title} />
-      <Title level={5}>{"Content"}</Title>
-      <MarkdownField value={record?.content} />
-      <Title level={5}>{"Category"}</Title>
-      <TextField
-        value={
-          categoryIsLoading ? <>Loading...</> : <>{categoryData?.data?.title}</>
-        }
-      />
-      <Title level={5}>{"Status"}</Title>
-      <TextField value={record?.status} />
-      <Title level={5}>{"CreatedAt"}</Title>
-      <DateField value={record?.createdAt} />
-    </Show>
+    <Space direction="vertical" size="middle">
+      <Show isLoading={isLoading}>
+        <Title level={5}>{"ID"}</Title>
+        <NumberField value={record?.id ?? ""} />
+        <Title level={5}>{"Title"}</Title>
+        <TextField value={record?.title} />
+        <Title level={5}>{"Content"}</Title>
+        <MarkdownField value={record?.content} />
+        <Title level={5}>{"Category"}</Title>
+        <TextField
+          value={
+            categoryIsLoading ? <>Loading...</> : <>{categoryData?.data?.title}</>
+          }
+        />
+        <Title level={5}>{"Status"}</Title>
+        <TextField value={record?.status} />
+        <Title level={5}>{"CreatedAt"}</Title>
+        <DateField value={record?.createdAt} />
+      </Show>
+      <WyComments uid={`refine:${btoa(`${pathname}#comments`)}`} notifications="none" />
+    </Space>
   );
 }
