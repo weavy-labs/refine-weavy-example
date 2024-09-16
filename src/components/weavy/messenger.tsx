@@ -4,7 +4,7 @@ import { WyMessenger } from "@weavy/uikit-react"
 import { WeavyThemeProvider } from "@contexts/weavy/theme"
 import { MessageOutlined } from "@ant-design/icons"
 import { useGo } from "@refinedev/core"
-import useHash from "@providers/weavy/useHash"
+import useHash from "@hooks/hash/useHash"
 
 export const WeavyMessenger: React.FC = () => {
   const [open, setOpen] = useState(false)

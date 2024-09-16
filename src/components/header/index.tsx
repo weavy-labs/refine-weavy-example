@@ -1,5 +1,4 @@
 "use client"
-
 import { WeavyMessenger } from "@components/weavy/messenger"
 import { WeavyNotifications } from "@components/weavy/notifications"
 import { ColorModeContext } from "@contexts/color-mode"

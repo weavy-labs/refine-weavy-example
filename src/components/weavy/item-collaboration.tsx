@@ -1,5 +1,5 @@
 "use client"
-import useHash from "@providers/weavy/useHash"
+import useHash from "@hooks/hash/useHash"
 import { useGo, useParsed } from "@refinedev/core"
 import { WyChat, WyFiles, WyPosts } from "@weavy/uikit-react"
 import { Card } from "antd"

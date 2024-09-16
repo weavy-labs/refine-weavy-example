@@ -6,6 +6,7 @@ import {
   NumberField,
   Show,
   TextField,
+
 } from "@refinedev/antd";
 import { useOne, useParsed, useShow } from "@refinedev/core";
 import { WyComments } from "@weavy/uikit-react";
@@ -16,10 +17,9 @@ const { Title } = Typography;
 export default function BlogPostShow() {
   const { query: queryResult } = useShow({});
   const { data, isLoading } = queryResult;
-  const { pathname } = useParsed();
-
+  
   const record = data?.data;
-
+  
   const { data: categoryData, isLoading: categoryIsLoading } = useOne({
     resource: "categories",
     id: record?.category?.id || "",
@@ -27,6 +27,9 @@ export default function BlogPostShow() {
       enabled: !!record,
     },
   });
+  
+  const { pathname } = useParsed();
+  const commentsUid = `refine:${btoa(`${pathname}#comments`)}`
 
   return (
     <Space direction="vertical" size="middle">
@@ -48,7 +51,7 @@ export default function BlogPostShow() {
         <Title level={5}>{"CreatedAt"}</Title>
         <DateField value={record?.createdAt} />
       </Show>
-      <WyComments uid={`refine:${btoa(`${pathname}#comments`)}`} notifications="none" />
+      <WyComments uid={commentsUid} notifications="none" />
     </Space>
   );
 }
