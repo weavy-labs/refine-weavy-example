@@ -15,16 +15,17 @@ export const WeavyThemeProvider = (props: React.PropsWithChildren) => {
     [key: `--${string}`]: string | number | undefined
   } = {
     display: "contents",
-    "--wy-theme": token.colorPrimary,
-    "--wy-border-radius": `${token.borderRadius}px`,
+    "--wy-theme-color": token.colorPrimary,
     "--wy-font-size": `${token.fontSize}px`,
+    "--wy-border-radius": `${token.borderRadius}px`,
+    "--wy-avatar-border-radius": "50%",
     "--wy-padding": `${token.padding / 2}px`,
+
     "--wy-button-padding-x": `${token.paddingContentHorizontalSM / 2}px`,
     "--wy-button-padding-y": `${token.paddingContentVerticalSM / 2}px`,
     "--wy-input-padding-x": `${token.paddingContentHorizontalSM / 2}px`,
-    "--wy-input-padding-y": `${token.paddingContentVerticalSM / 2}px`,
+    "--wy-input-padding-y": `${token.paddingContentVerticalSM / 2 }px`,
 
-    // Fallback when --wy-theme can't be set
     "--wy-primary": token.colorPrimary,
     "--wy-on-primary": token.Button?.primaryColor,
   }
