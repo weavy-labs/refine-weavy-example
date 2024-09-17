@@ -9,7 +9,6 @@ import useHash from "@hooks/hash/useHash"
 export const WeavyMessenger: React.FC = () => {
   const [open, setOpen] = useState(false)
   const go = useGo()
-
   const hash = useHash()
 
   const showDrawer = () => {
@@ -19,11 +18,13 @@ export const WeavyMessenger: React.FC = () => {
   const closeDrawer = () => {
     setOpen(false)
     if (hash === "messenger") {
-        go({ hash: "" })
+      // Clear the hash when closing the drawer
+      go({ hash: "" })
     }
   }
 
   useEffect(() => {
+    // Show the drawer when the #messenger hash is set
     if (hash === "messenger") {
       showDrawer()
     }

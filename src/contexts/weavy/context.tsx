@@ -9,6 +9,7 @@ export const WeavyContextProvider = (props: React.PropsWithChildren) => {
 
   useEffect(() => {
     if (identity?.authenticated) {
+      // Once the user is authenticated, we request the server to update the user data in the Weavy environment.
       updateUser()
     }
   }, [identity?.authenticated])

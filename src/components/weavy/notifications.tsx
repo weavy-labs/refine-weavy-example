@@ -1,21 +1,19 @@
 "use client"
-import React, { useContext, useEffect, useRef, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Badge, Button, Drawer } from "antd"
-import { ConversationTypes, WeavyContext, WyLinkEventType, WyNotifications, WyNotificationsEventType, WyNotificationToasts } from "@weavy/uikit-react"
+import { ConversationTypes, WeavyContext, WyLinkEventType, WyNotifications, WyNotificationsEventType } from "@weavy/uikit-react"
 import { WeavyThemeProvider } from "@contexts/weavy/theme"
 import { BellOutlined } from "@ant-design/icons"
-import { useCustom, useGo, useNotification, useParsed } from "@refinedev/core"
+import { useGo, useNotification, useParsed } from "@refinedev/core"
 
 export const WeavyNotifications: React.FC = () => {
   const [open, setOpen] = useState(false)
   const [notificationCount, setNotificationCount] = useState(0)
+  const { open: openNotification } = useNotification()
+  const { pathname } = useParsed()
+  const go = useGo()
 
   const weavy = useContext(WeavyContext)
-
-  const go = useGo()
-  const { pathname } = useParsed()
-
-  const { open: openNotification } = useNotification()
 
   const showDrawer = () => {
     setOpen(true)
@@ -27,14 +25,21 @@ export const WeavyNotifications: React.FC = () => {
 
   const updateNotificationCount = async () => {
     if (weavy) {
+      // Fetch notification count from the Weavy Web API.
+      // See https://www.weavy.com/docs/reference/web-api/notifications#list-notifications
+
       const queryParams = new URLSearchParams({
         type: "",
         countOnly: "true",
         unread: "true",
       })
+
+      // Use weavy.get() for fetching from the Weavy Web API to fetch on behalf of the currently authenticated user.
       const response = await weavy.get(`/api/notifications?${queryParams.toString()}`)
       if (response.ok) {
         const result = await response.json()
+
+        // Update the count
         setNotificationCount(result.count)
       }
     }
@@ -42,22 +47,23 @@ export const WeavyNotifications: React.FC = () => {
 
   const handleNotifications = (e: WyNotificationsEventType) => {
     if (e.detail.notification && e.detail.action === "notification_created") {
+      // Only show notifications when a new notification is received
+
+      // Show notifications using the Refine API
       openNotification?.({
         message: e.detail.notification.plain,
         // @ts-expect-error empty type for plain notification
         type: "",
       })
     }
+
+    // Always update the notification count when notifications updates are received
     updateNotificationCount()
   }
 
   const handleLink = (e: WyLinkEventType) => {
     const appType = e.detail.app?.type
     let appUid = e.detail.app?.uid
-
-    if (appUid) {
-      appUid = decodeURIComponent(appUid)
-    }
 
     // Check if the appType guid exists in the ConversationTypes map
     if (ConversationTypes.has(appType as string)) {
@@ -67,12 +73,16 @@ export const WeavyNotifications: React.FC = () => {
     } else if (appUid) {
       // Show a contextual block by navigation to another page
 
+      // The uid should look something like "refine:adb567a"
+      // We have embedded base-64 encoded path information in the uid and to use it we need to decode it.
       if (appUid.startsWith("refine:")) {
         let [_prefix, route] = appUid.split(":")
 
         if (route) {
+          // decode base-64 encoded pathname
           route = atob(route)
         }
+
         console.log("trying navigate", route)
 
         // Only navigate if necessary
@@ -86,10 +96,17 @@ export const WeavyNotifications: React.FC = () => {
 
   useEffect(() => {
     if (weavy) {
+      // Configure realtime notifications listener
       weavy.notificationEvents = true
+
+      // Add a realtime notification event listener
       weavy.host?.addEventListener("wy:notifications", handleNotifications)
+      
+      // Get initial notification count
       updateNotificationCount()
+
       return () => {
+        // Unregister the event listener when the component is unmounted
         weavy.host?.removeEventListener("wy:notifications", handleNotifications)
       }
     }

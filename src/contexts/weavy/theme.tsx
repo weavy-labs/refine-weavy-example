@@ -1,5 +1,5 @@
 "use client"
-import React, { useContext, useEffect } from "react"
+import React, { useContext } from "react"
 import { theme } from "antd"
 import { ColorModeContext } from "@contexts/color-mode"
 
@@ -9,12 +9,15 @@ export const WeavyThemeProvider = (props: React.PropsWithChildren) => {
   const { token } = useToken()
   const { mode } = useContext(ColorModeContext)
 
+  // Follow the dark theme
   let classNames = mode === "dark" ? "wy-dark" : ""
 
+  // Link Ant design tokens to Weavy CSS variables
   const styles: React.CSSProperties & {
     [key: `--${string}`]: string | number | undefined
   } = {
     display: "contents",
+
     "--wy-theme-color": token.colorPrimary,
     "--wy-font-size": `${token.fontSize}px`,
     "--wy-border-radius": `${token.borderRadius}px`,
