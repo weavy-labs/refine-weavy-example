@@ -3,31 +3,34 @@ import React, { useContext, useEffect } from "react"
 import { theme } from "antd"
 import { ColorModeContext } from "@contexts/color-mode"
 
-const { useToken } = theme;
+const { useToken } = theme
 
 export const WeavyThemeProvider = (props: React.PropsWithChildren) => {
   const { token } = useToken()
-  const { mode } = useContext(ColorModeContext);
+  const { mode } = useContext(ColorModeContext)
 
-  useEffect(() => {
-    if (mode === "dark") {
-      document.documentElement.classList.add("wy-dark")
-    } else {
-      document.documentElement.classList.remove("wy-dark")
-    }
-  }, [mode])
+  let classNames = mode === "dark" ? "wy-dark" : ""
 
-  const styles: React.CSSProperties = {
+  const styles: React.CSSProperties & {
+    [key: `--${string}`]: string | number | undefined
+  } = {
     display: "contents",
-    ["--wy-theme" as string]: token.colorPrimary,
-    
+    "--wy-theme": token.colorPrimary,
+    "--wy-border-radius": `${token.borderRadius}px`,
+    "--wy-font-size": `${token.fontSize}px`,
+    "--wy-padding": `${token.padding / 2}px`,
+    "--wy-button-padding-x": `${token.paddingContentHorizontalSM / 2}px`,
+    "--wy-button-padding-y": `${token.paddingContentVerticalSM / 2}px`,
+    "--wy-input-padding-x": `${token.paddingContentHorizontalSM / 2}px`,
+    "--wy-input-padding-y": `${token.paddingContentVerticalSM / 2}px`,
+
     // Fallback when --wy-theme can't be set
-    ["--wy-primary" as string]: token.colorPrimary,
-    ["--wy-on-primary" as string]: token.Button?.primaryColor
+    "--wy-primary": token.colorPrimary,
+    "--wy-on-primary": token.Button?.primaryColor,
   }
 
   return (
-    <div style={styles}>
+    <div className={classNames} style={styles}>
       {props.children}
     </div>
   )

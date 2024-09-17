@@ -4,6 +4,7 @@ import { RefineContext } from "./_refine_context"
 import { AntdRegistry } from "@ant-design/nextjs-registry"
 import { cookies } from "next/headers"
 import { WeavyContextProvider } from "@contexts/weavy/context"
+import { WeavyThemeProvider } from "@contexts/weavy/theme"
 
 export const metadata: Metadata = {
   title: "Refine",
@@ -27,7 +28,11 @@ export default function RootLayout({
         <Suspense>
           <AntdRegistry>
             <RefineContext defaultMode={theme?.value}>
-              <WeavyContextProvider>{children}</WeavyContextProvider>
+              <WeavyContextProvider>
+                <WeavyThemeProvider>
+                  {children}
+                </WeavyThemeProvider>
+              </WeavyContextProvider>
             </RefineContext>
           </AntdRegistry>
         </Suspense>
