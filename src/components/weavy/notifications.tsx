@@ -23,6 +23,39 @@ export const WeavyNotifications: React.FC = () => {
     setOpen(false)
   }
 
+  const handleLink = (e: WyLinkEventType) => {
+    const appType = e.detail.app?.type
+    let appUid = e.detail.app?.uid
+
+    // Check if the appType guid exists in the ConversationTypes map
+    if (ConversationTypes.has(appType as string)) {
+      // Show the messenger
+      go({ hash: "messenger" })
+      closeDrawer()
+    } else if (appUid) {
+      // Show a contextual block by navigation to another page
+
+      // The uid should look something like "refine:adb567a"
+      // We have embedded base-64 encoded path information in the uid and to use it we need to decode it.
+      if (appUid.startsWith("refine:")) {
+        let [_prefix, route] = appUid.split(":")
+
+        if (route) {
+          // decode base-64 encoded pathname
+          route = atob(route)
+        }
+
+        console.log("trying navigate", route)
+
+        // Only navigate if necessary
+        if (!pathname?.startsWith(route)) {
+          go({ to: route })
+          closeDrawer()
+        }
+      }
+    }
+  }
+
   const updateNotificationCount = async () => {
     if (weavy) {
       // Fetch notification count from the Weavy Web API.
@@ -61,49 +94,16 @@ export const WeavyNotifications: React.FC = () => {
     updateNotificationCount()
   }
 
-  const handleLink = (e: WyLinkEventType) => {
-    const appType = e.detail.app?.type
-    let appUid = e.detail.app?.uid
-
-    // Check if the appType guid exists in the ConversationTypes map
-    if (ConversationTypes.has(appType as string)) {
-      // Show the messenger
-      go({ hash: "messenger" })
-      closeDrawer()
-    } else if (appUid) {
-      // Show a contextual block by navigation to another page
-
-      // The uid should look something like "refine:adb567a"
-      // We have embedded base-64 encoded path information in the uid and to use it we need to decode it.
-      if (appUid.startsWith("refine:")) {
-        let [_prefix, route] = appUid.split(":")
-
-        if (route) {
-          // decode base-64 encoded pathname
-          route = atob(route)
-        }
-
-        console.log("trying navigate", route)
-
-        // Only navigate if necessary
-        if (!pathname?.startsWith(route)) {
-          go({ to: route })
-          closeDrawer()
-        }
-      }
-    }
-  }
-
   useEffect(() => {
     if (weavy) {
+      // Get initial notification count
+      updateNotificationCount()
+      
       // Configure realtime notifications listener
       weavy.notificationEvents = true
 
       // Add a realtime notification event listener
       weavy.host?.addEventListener("wy:notifications", handleNotifications)
-      
-      // Get initial notification count
-      updateNotificationCount()
 
       return () => {
         // Unregister the event listener when the component is unmounted
