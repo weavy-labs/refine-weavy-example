@@ -67,8 +67,8 @@ export const WeavyNotifications: React.FC = () => {
         unread: "true",
       })
 
-      // Use weavy.get() for fetching from the Weavy Web API to fetch on behalf of the currently authenticated user.
-      const response = await weavy.get(`/api/notifications?${queryParams.toString()}`)
+      // Use weavy.fetch() for fetching from the Weavy Web API to fetch on behalf of the currently authenticated user.
+      const response = await weavy.fetch(`/api/notifications?${queryParams.toString()}`)
       if (response.ok) {
         const result = await response.json()
 
