@@ -15,7 +15,7 @@ export const WeavyContextProvider = (props: React.PropsWithChildren) => {
   }, [identity?.authenticated])
 
   return (
-    <WyContext url={process.env.NEXT_PUBLIC_WY_URL} tokenFactory={tokenFactory}>
+    <WyContext url={process.env.NEXT_PUBLIC_WEAVY_URL} tokenFactory={tokenFactory}>
         {props.children}
     </WyContext>
   )

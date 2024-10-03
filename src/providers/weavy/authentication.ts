@@ -50,11 +50,11 @@ export const tokenFactory = async (refresh: boolean = false) => {
   }
 
   // fetch access_token from server
-  const response = await fetch(new URL(`/api/users/${user.uid}/tokens`, process.env.NEXT_PUBLIC_WY_URL), {
+  const response = await fetch(new URL(`/api/users/${user.uid}/tokens`, process.env.NEXT_PUBLIC_WEAVY_URL), {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      Authorization: `Bearer ${process.env.WY_APIKEY}`,
+      Authorization: `Bearer ${process.env.WEAVY_APIKEY}`,
     },
     body: JSON.stringify({ expires_in: 3600 }),
   })
@@ -81,11 +81,11 @@ export const updateUser = async () => {
 
   console.log("Updating weavy user", user.uid)
 
-  const response = await fetch(new URL(`/api/users/${user.uid}`, process.env.NEXT_PUBLIC_WY_URL), {
+  const response = await fetch(new URL(`/api/users/${user.uid}`, process.env.NEXT_PUBLIC_WEAVY_URL), {
     method: "PUT",
     headers: {
       "content-type": "application/json",
-      Authorization: `Bearer ${process.env.WY_APIKEY}`,
+      Authorization: `Bearer ${process.env.WEAVY_APIKEY}`,
     },
     body: JSON.stringify(user.weavyUser),
   })
