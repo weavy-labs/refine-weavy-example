@@ -5,7 +5,7 @@ import { ConversationTypes, WeavyContext, WyLinkEventType, WyNotifications, WyNo
 import { WeavyThemeProvider } from "@contexts/weavy/theme"
 import { BellOutlined } from "@ant-design/icons"
 import { useGo, useNotification, useParsed } from "@refinedev/core"
-import { AppWithPageType } from "@hooks/hash/usePageNavigation"
+import { AppWithPageType } from "@hooks/weavy/usePageNavigation"
 
 export const WeavyNotifications: React.FC = () => {
   const [open, setOpen] = useState(false)

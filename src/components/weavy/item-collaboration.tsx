@@ -1,6 +1,6 @@
 "use client"
 import useHash from "@hooks/hash/useHash"
-import { usePageNavigation } from "@hooks/hash/usePageNavigation"
+import { usePageNavigation } from "@hooks/weavy/usePageNavigation"
 import { useGo, useParsed } from "@refinedev/core"
 import { WyChat, WyFiles, WyPosts } from "@weavy/uikit-react"
 import { Card } from "antd"

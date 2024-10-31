@@ -9,11 +9,11 @@ export type WeavyUser = {
 }
 
 // Cache for current tokens
-const _tokens = new Map<string, string>();
+const _tokens = new Map<string, string>()
 
 /**
  * Get the currently authenticated user server side from NextAuth.
- * 
+ *
  * @returns The `uid` and the `weavyUser` as a `WeavyUser`
  */
 export const getAuthenticatedUser = async () => {
@@ -33,7 +33,7 @@ export const getAuthenticatedUser = async () => {
 
 /**
  * Gets an authentication token server-to-server for the currently authenticated user.
- * 
+ *
  * @param refresh - Whether to request a fresh token or use an existing token
  * @returns {string} The current user token
  */
@@ -45,7 +45,7 @@ export const tokenFactory = async (refresh: boolean = false) => {
     const token = _tokens.get(user.uid)
     if (token) {
       console.log("Using cached token", user.uid)
-      return token;
+      return token
     }
   }
 

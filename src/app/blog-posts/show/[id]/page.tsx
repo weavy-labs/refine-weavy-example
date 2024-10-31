@@ -1,17 +1,15 @@
 "use client";
-
-import { usePageNavigation } from "@hooks/hash/usePageNavigation";
 import {
   DateField,
   MarkdownField,
   NumberField,
   Show,
   TextField,
-
 } from "@refinedev/antd";
 import { useOne, useParsed, useShow } from "@refinedev/core";
-import { WyComments } from "@weavy/uikit-react";
 import { Space, Typography } from "antd";
+import { WyComments } from "@weavy/uikit-react";
+import { usePageNavigation } from "@hooks/weavy/usePageNavigation";
 
 const { Title } = Typography;
 
@@ -29,9 +27,12 @@ export default function BlogPostShow() {
     },
   });
   
+  // Construct an uid
+  const commentsUid = record?.id ? `refine:categories:${record?.id}:comment`: undefined
+  
+  // Save page metadata for navigation
   const { pathname } = useParsed();
-  const commentsUid = record?.id && !isLoading ? `refine:categories:${record?.id}:comment`: undefined
-  const componentRefCallback = usePageNavigation(() => `${pathname}#comments`, [commentsUid]);
+  const componentRefCallback = usePageNavigation(() => `${pathname}`, [commentsUid]);
 
   return (
     <Space direction="vertical" size="middle">
