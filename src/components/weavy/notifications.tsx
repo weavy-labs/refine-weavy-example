@@ -5,6 +5,7 @@ import { ConversationTypes, WeavyContext, WyLinkEventType, WyNotifications, WyNo
 import { WeavyThemeProvider } from "@contexts/weavy/theme"
 import { BellOutlined } from "@ant-design/icons"
 import { useGo, useNotification, useParsed } from "@refinedev/core"
+import { AppWithPageType } from "@hooks/hash/usePageNavigation"
 
 export const WeavyNotifications: React.FC = () => {
   const [open, setOpen] = useState(false)
@@ -23,7 +24,7 @@ export const WeavyNotifications: React.FC = () => {
     setOpen(false)
   }
 
-  const handleLink = (e: WyLinkEventType) => {
+  const handleLink = async (e: WyLinkEventType) => {
     const appType = e.detail.app?.type
     let appUid = e.detail.app?.uid
 
@@ -32,25 +33,29 @@ export const WeavyNotifications: React.FC = () => {
       // Show the messenger
       go({ hash: "messenger" })
       closeDrawer()
-    } else if (appUid) {
+    } else if (weavy && appUid) {
       // Show a contextual block by navigation to another page
 
-      // The uid should look something like "refine:adb567a"
-      // We have embedded base-64 encoded path information in the uid and to use it we need to decode it.
       if (appUid.startsWith("refine:")) {
-        let [_prefix, route] = appUid.split(":")
-
-        if (route) {
-          // decode base-64 encoded pathname
-          route = atob(route)
+        // First we much fetch the app metadata from the server
+        const response = await weavy.fetch(`/api/apps/${appUid}`)
+        if (!response.ok) {
+          console.error("Error fetching app")
+          return
         }
 
-        console.log("trying navigate", route)
+        const { metadata } = (await response.json()) as AppWithPageType
+        const route = metadata?.page
 
-        // Only navigate if necessary
-        if (!pathname?.startsWith(route)) {
-          go({ to: route })
-          closeDrawer()
+        // We can navigate if there is page metadata
+        if (route) {
+          console.log("Trying to navigate", route)
+
+          // Only navigate if necessary
+          if (!pathname?.startsWith(route)) {
+            go({ to: route })
+            closeDrawer()
+          }
         }
       }
     }
@@ -98,7 +103,7 @@ export const WeavyNotifications: React.FC = () => {
     if (weavy) {
       // Get initial notification count
       updateNotificationCount()
-      
+
       // Configure realtime notifications listener
       weavy.notificationEvents = true
 

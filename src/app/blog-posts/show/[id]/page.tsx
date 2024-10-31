@@ -1,5 +1,6 @@
 "use client";
 
+import { usePageNavigation } from "@hooks/hash/usePageNavigation";
 import {
   DateField,
   MarkdownField,
@@ -29,7 +30,8 @@ export default function BlogPostShow() {
   });
   
   const { pathname } = useParsed();
-  const commentsUid = `refine:${btoa(`${pathname}#comments`)}`
+  const commentsUid = record?.id && !isLoading ? `refine:categories:${record?.id}:comment`: undefined
+  const componentRefCallback = usePageNavigation(() => `${pathname}#comments`, [commentsUid]);
 
   return (
     <Space direction="vertical" size="middle">
@@ -51,7 +53,7 @@ export default function BlogPostShow() {
         <Title level={5}>{"CreatedAt"}</Title>
         <DateField value={record?.createdAt} />
       </Show>
-      <WyComments uid={commentsUid} notifications="none" />
+      <WyComments uid={commentsUid} ref={componentRefCallback} notifications="none" />
     </Space>
   );
 }

@@ -22,7 +22,7 @@ export default function CategoryShow() {
         <Title level={5}>{"Title"}</Title>
         <TextField value={record?.title} />
       </Show>
-      <WeavyItemCollaboration />
+      <WeavyItemCollaboration id={isLoading ? undefined : record?.id} />
     </Flex>
   )
 }
