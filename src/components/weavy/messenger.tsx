@@ -36,7 +36,6 @@ export const WeavyMessenger: React.FC = () => {
         type="default"
         onClick={showDrawer}
         title="Messenger"
-        // @ts-expect-error Ant Design Icon's v5.0.1 has an issue with @types/react@^18.2.66
         icon={<MessageOutlined />}
       ></Button>
       <Drawer onClose={closeDrawer} open={open} styles={{ body: { padding: 0, display: "flex" } }}>

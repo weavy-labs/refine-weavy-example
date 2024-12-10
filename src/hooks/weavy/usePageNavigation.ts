@@ -1,7 +1,7 @@
 "use client"
 import { setPageNavigation } from "@providers/weavy/navigation"
 import { WeavyTypes } from "@weavy/uikit-react"
-import { useCallback, useEffect, useState } from "react"
+import { LegacyRef, useCallback, useEffect, useState } from "react"
 
 export type AppWithPageType = WeavyTypes.AppType & {
   metadata?: WeavyTypes.AppType["metadata"] & {
@@ -9,7 +9,7 @@ export type AppWithPageType = WeavyTypes.AppType & {
   }
 }
 
-export type WyAppRef = (HTMLElement & { uid?: string; whenApp: () => Promise<AppWithPageType> }) | null
+export type WyAppRef = (HTMLElement & { uid?: string | null; whenApp: () => Promise<AppWithPageType> }) | null
 
 /**
  * Calls the page navigation provider to update page metadata for a component.
@@ -19,7 +19,7 @@ export type WyAppRef = (HTMLElement & { uid?: string; whenApp: () => Promise<App
  * @param deps - Any deps that should be monitored to re-trigger the provider call.
  * @returns Ref callback function to be used with the ref attribute of a component.
  */
-export const usePageNavigation = (path: string | (() => string), deps: React.DependencyList) => {
+export const usePageNavigation = <TRef extends WyAppRef | null = WyAppRef>(path: string | (() => string), deps: React.DependencyList) => {
   const [component, setComponent] = useState<WyAppRef>()
 
   useEffect(() => {
@@ -42,8 +42,8 @@ export const usePageNavigation = (path: string | (() => string), deps: React.Dep
   }, [component, component?.uid, ...deps])
 
   // Ref callback function to use with components
-  return useCallback((ref: WyAppRef | null) => {
+  return useCallback((ref: TRef) => {
     const currentComponent = ref?.whenApp ? ref : undefined
     setComponent(currentComponent)
-  }, [])
+  }, []) as LegacyRef<TRef> | undefined
 }

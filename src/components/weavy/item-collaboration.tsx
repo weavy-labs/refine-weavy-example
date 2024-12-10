@@ -2,9 +2,9 @@
 import useHash from "@hooks/hash/useHash"
 import { usePageNavigation } from "@hooks/weavy/usePageNavigation"
 import { useGo, useParsed } from "@refinedev/core"
-import { WyChat, WyFiles, WyPosts } from "@weavy/uikit-react"
+import { WeavyTypes, WyChat, WyFiles, WyPosts } from "@weavy/uikit-react"
 import { Card } from "antd"
-import { useEffect, useState } from "react"
+import { LegacyRef, useEffect, useState } from "react"
 
 export function WeavyItemCollaboration({ id }: { id?: string | number}) {
   const { pathname } = useParsed()
@@ -38,9 +38,9 @@ export function WeavyItemCollaboration({ id }: { id?: string | number}) {
 
   // We encode the path of each tab into the uid using base-64 encoding to be able to navigate to each tab from notifications.
   const tabContent: Record<string, React.ReactNode> = {
-    posts: <WyPosts uid={`refine:blog-posts:${id}:posts`} ref={componentRefCallback} notifications="none" />,
-    chat: <WyChat uid={`refine:blog-posts:${id}:chat`} ref={componentRefCallback} notifications="none" />,
-    files: <WyFiles uid={`refine:blog-posts:${id}:files`} ref={componentRefCallback} notifications="none" />,
+    posts: <WyPosts uid={`refine:blog-posts:${id}:posts`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyPosts> | undefined} notifications="none" />,
+    chat: <WyChat uid={`refine:blog-posts:${id}:chat`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyChat> | undefined} notifications="none" />,
+    files: <WyFiles uid={`refine:blog-posts:${id}:files`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyFiles> | undefined} notifications="none" />,
   }
 
 

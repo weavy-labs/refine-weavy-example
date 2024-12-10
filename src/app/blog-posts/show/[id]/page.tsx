@@ -8,7 +8,7 @@ import {
 } from "@refinedev/antd";
 import { useOne, useParsed, useShow } from "@refinedev/core";
 import { Space, Typography } from "antd";
-import { WyComments } from "@weavy/uikit-react";
+import { WeavyTypes, WyComments } from "@weavy/uikit-react";
 import { usePageNavigation } from "@hooks/weavy/usePageNavigation";
 
 const { Title } = Typography;
@@ -32,7 +32,7 @@ export default function BlogPostShow() {
   
   // Save page metadata for navigation
   const { pathname } = useParsed();
-  const componentRefCallback = usePageNavigation(() => `${pathname}`, [commentsUid]);
+  const componentRefCallback = usePageNavigation<WeavyTypes.WyComments>(() => `${pathname}`, [commentsUid]);
 
   return (
     <Space direction="vertical" size="middle">
