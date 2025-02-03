@@ -1,15 +1,9 @@
 "use client"
 import { setPageNavigation } from "@providers/weavy/navigation"
-import { WeavyTypes } from "@weavy/uikit-react"
+import { WeavyTypes } from "@weavy/uikit-react";
 import { LegacyRef, useCallback, useEffect, useState } from "react"
 
-export type AppWithPageType = WeavyTypes.AppType & {
-  metadata?: WeavyTypes.AppType["metadata"] & {
-    page?: string
-  }
-}
-
-export type WyAppRef = (HTMLElement & { uid?: string | null; whenApp: () => Promise<AppWithPageType> }) | null
+export type WyAppRef = (HTMLElement & { uid?: string | null; whenApp: () => Promise<WeavyTypes.AppWithSourceMetadataType> }) | null
 
 /**
  * Calls the page navigation provider to update page metadata for a component.
@@ -31,10 +25,10 @@ export const usePageNavigation = <TRef extends WyAppRef | null = WyAppRef>(path:
         component.whenApp().then((app) => {
           //console.log("Current refine page", component.uid, app.metadata?.page)
           // Check if metadata.page already is set
-          if (component.uid && !app.metadata?.page) {
+          if (component.uid && (!app.metadata?.source_data || !app.metadata?.source_url || !app.metadata.source_name)) {
             console.log("Setting refine page", component.uid, componentPath)
             // Update using server function
-            setPageNavigation(component.uid, componentPath)
+            setPageNavigation(component.uid, componentPath, document.location.origin)
           }
         })
       })

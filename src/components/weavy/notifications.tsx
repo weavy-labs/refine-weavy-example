@@ -1,65 +1,62 @@
-"use client"
-import React, { useContext, useEffect, useState } from "react"
-import { Badge, Button, Drawer } from "antd"
-import { ConversationTypes, WeavyContext, WyLinkEventType, WyNotifications, WyNotificationsEventType } from "@weavy/uikit-react"
-import { WeavyThemeProvider } from "@contexts/weavy/theme"
-import { BellOutlined } from "@ant-design/icons"
-import { useGo, useNotification, useParsed } from "@refinedev/core"
-import { AppWithPageType } from "@hooks/weavy/usePageNavigation"
+"use client";
+import React, { useContext, useEffect, useState } from "react";
+import { Badge, Button, Drawer } from "antd";
+import {
+  MessengerTypes,
+  WeavyContext,
+  WyLinkEventType,
+  WyNotifications,
+  WyNotificationsEventType,
+} from "@weavy/uikit-react";
+import { WeavyThemeProvider } from "@contexts/weavy/theme";
+import { BellOutlined } from "@ant-design/icons";
+import { useGo, useNotification, useParsed } from "@refinedev/core";
 
 export const WeavyNotifications: React.FC = () => {
-  const [open, setOpen] = useState(false)
-  const [notificationCount, setNotificationCount] = useState(0)
-  const { open: openNotification } = useNotification()
-  const { pathname } = useParsed()
-  const go = useGo()
+  const [open, setOpen] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const { open: openNotification } = useNotification();
+  const { pathname } = useParsed();
+  const go = useGo();
 
-  const weavy = useContext(WeavyContext)
+  const weavy = useContext(WeavyContext);
 
   const showDrawer = () => {
-    setOpen(true)
-  }
+    setOpen(true);
+  };
 
   const closeDrawer = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const handleLink = async (e: WyLinkEventType) => {
-    const appType = e.detail.app?.type
-    let appUid = e.detail.app?.uid
+    const appType = e.detail.link.app?.type;
 
-    // Check if the appType guid exists in the ConversationTypes map
-    if (ConversationTypes.has(appType as string)) {
+    console.log("Opening link", e.detail)
+
+    // Check if the appType guid exists in the MessengerTypes map
+    if (appType && MessengerTypes.has(appType)) {
       // Show the messenger
-      go({ hash: "messenger" })
-      closeDrawer()
-    } else if (weavy && appUid) {
-      // Show a contextual block by navigation to another page
+      go({ hash: "messenger" });
+      closeDrawer();
+    } else if (e.detail.source_name === "refine") {
+      const route = e.detail.source_data;
 
-      if (appUid.startsWith("refine:")) {
-        // First we much fetch the app metadata from the server
-        const response = await weavy.fetch(`/api/apps/${appUid}`)
-        if (!response.ok) {
-          console.error("Error fetching app")
-          return
+      // We can navigate if there is page metadata
+      if (route) {
+        console.log("Trying to navigate", route);
+
+        // Only navigate if necessary
+        if (!pathname?.startsWith(route)) {
+          go({ to: route });
         }
-
-        const { metadata } = (await response.json()) as AppWithPageType
-        const route = metadata?.page
-
-        // We can navigate if there is page metadata
-        if (route) {
-          console.log("Trying to navigate", route)
-
-          // Only navigate if necessary
-          if (!pathname?.startsWith(route)) {
-            go({ to: route })
-            closeDrawer()
-          }
-        }
+        closeDrawer();
       }
+    } else if (e.detail.source_url) {
+      // Open link to external app
+      window.open(e.detail.source_url, "_blank");
     }
-  }
+  };
 
   const updateNotificationCount = async () => {
     if (weavy) {
@@ -70,18 +67,20 @@ export const WeavyNotifications: React.FC = () => {
         type: "",
         countOnly: "true",
         unread: "true",
-      })
+      });
 
       // Use weavy.fetch() for fetching from the Weavy Web API to fetch on behalf of the currently authenticated user.
-      const response = await weavy.fetch(`/api/notifications?${queryParams.toString()}`)
+      const response = await weavy.fetch(
+        `/api/notifications?${queryParams.toString()}`
+      );
       if (response.ok) {
-        const result = await response.json()
+        const result = await response.json();
 
         // Update the count
-        setNotificationCount(result.count)
+        setNotificationCount(result.count);
       }
     }
-  }
+  };
 
   const handleNotifications = (e: WyNotificationsEventType) => {
     if (e.detail.notification && e.detail.action === "notification_created") {
@@ -92,30 +91,33 @@ export const WeavyNotifications: React.FC = () => {
         message: e.detail.notification.plain,
         // @ts-expect-error empty type for plain notification
         type: "",
-      })
+      });
     }
 
     // Always update the notification count when notifications updates are received
-    updateNotificationCount()
-  }
+    updateNotificationCount();
+  };
 
   useEffect(() => {
     if (weavy) {
       // Get initial notification count
-      updateNotificationCount()
+      updateNotificationCount();
 
       // Configure realtime notifications listener
-      weavy.notificationEvents = true
+      weavy.notificationEvents = true;
 
       // Add a realtime notification event listener
-      weavy.host?.addEventListener("wy:notifications", handleNotifications)
+      weavy.host?.addEventListener("wy-notifications", handleNotifications);
 
       return () => {
         // Unregister the event listener when the component is unmounted
-        weavy.host?.removeEventListener("wy:notifications", handleNotifications)
-      }
+        weavy.host?.removeEventListener(
+          "wy-notifications",
+          handleNotifications
+        );
+      };
     }
-  }, [weavy])
+  }, [weavy]);
 
   return (
     <>
@@ -127,11 +129,15 @@ export const WeavyNotifications: React.FC = () => {
           icon={<BellOutlined />}
         ></Button>
       </Badge>
-      <Drawer onClose={closeDrawer} open={open} styles={{ body: { padding: 0 } }}>
+      <Drawer
+        onClose={closeDrawer}
+        open={open}
+        styles={{ body: { padding: 0 } }}
+      >
         <WeavyThemeProvider>
           <WyNotifications onWyLink={handleLink} />
         </WeavyThemeProvider>
       </Drawer>
     </>
-  )
-}
+  );
+};
