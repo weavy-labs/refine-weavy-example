@@ -130,6 +130,7 @@ export const WeavyNotifications: React.FC = () => {
         ></Button>
       </Badge>
       <Drawer
+        title="Notifications"
         onClose={closeDrawer}
         open={open}
         styles={{ body: { padding: 0 } }}

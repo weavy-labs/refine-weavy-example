@@ -5,7 +5,7 @@ import { WeavyTypes } from "@weavy/uikit-react"
  * Sets page metadata for an app.
  * The metadata is used when clicking notifications to be able to navigate back to the component that generated the content.
  */
-export const setPageNavigation = async (uid: string, path: string, origin: string) => {
+export const setPageNavigation = async (uid: string|number, path: string, origin: string) => {
   let app: WeavyTypes.AppWithSourceMetadataType | undefined
 
   {

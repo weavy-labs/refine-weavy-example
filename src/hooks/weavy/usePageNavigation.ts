@@ -3,7 +3,7 @@ import { setPageNavigation } from "@providers/weavy/navigation"
 import { WeavyTypes } from "@weavy/uikit-react";
 import { LegacyRef, useCallback, useEffect, useState } from "react"
 
-export type WyAppRef = (HTMLElement & { uid?: string | null; whenApp: () => Promise<WeavyTypes.AppWithSourceMetadataType> }) | null
+export type WyAppRef = (HTMLElement & { uid?: string | number | null; whenApp: () => Promise<WeavyTypes.AppWithSourceMetadataType> }) | null
 
 /**
  * Calls the page navigation provider to update page metadata for a component.
