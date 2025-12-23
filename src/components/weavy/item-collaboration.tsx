@@ -38,9 +38,9 @@ export function WeavyItemCollaboration({ id }: { id?: string | number}) {
 
   // We encode the path of each tab into the uid using base-64 encoding to be able to navigate to each tab from notifications.
   const tabContent: Record<string, React.ReactNode> = {
-    posts: <WyPosts uid={`refine:blog-posts:${id}:posts`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyPosts> | undefined} notifications="none" />,
-    chat: <WyChat uid={`refine:blog-posts:${id}:chat`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyChat> | undefined} notifications="none" />,
-    files: <WyFiles uid={`refine:blog-posts:${id}:files`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyFiles> | undefined} notifications="none" />,
+    posts: <WyPosts uid={`refine:blog-posts:${id}:posts`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyPosts> | undefined} />,
+    chat: <WyChat uid={`refine:blog-posts:${id}:chat`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyChat> | undefined} />,
+    files: <WyFiles uid={`refine:blog-posts:${id}:files`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyFiles> | undefined} />,
   }
 
 

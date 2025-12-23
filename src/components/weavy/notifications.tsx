@@ -6,7 +6,8 @@ import {
   WeavyContext,
   WyLinkEventType,
   WyNotifications,
-  WyNotificationsEventType,
+  WyNotificationEventType,
+  WeavyType,
 } from "@weavy/uikit-react";
 import { WeavyThemeProvider } from "@contexts/weavy/theme";
 import { BellOutlined } from "@ant-design/icons";
@@ -19,7 +20,7 @@ export const WeavyNotifications: React.FC = () => {
   const { pathname } = useParsed();
   const go = useGo();
 
-  const weavy = useContext(WeavyContext);
+  const weavy: WeavyType = useContext(WeavyContext as React.Context<WeavyType>);
 
   const showDrawer = () => {
     setOpen(true);
@@ -30,7 +31,7 @@ export const WeavyNotifications: React.FC = () => {
   };
 
   const handleLink = async (e: WyLinkEventType) => {
-    const appType = e.detail.link.app?.type;
+    const appType = e.detail.link?.app?.type;
 
     console.log("Opening link", e.detail)
 
@@ -82,13 +83,13 @@ export const WeavyNotifications: React.FC = () => {
     }
   };
 
-  const handleNotifications = (e: WyNotificationsEventType) => {
-    if (e.detail.notification && e.detail.action === "notification_created") {
+  const handleNotifications = (e: WyNotificationEventType) => {
+    if (e.detail) {
       // Only show notifications when a new notification is received
 
       // Show notifications using the Refine API
       openNotification?.({
-        message: e.detail.notification.plain,
+        message: e.detail.title,
         // @ts-expect-error empty type for plain notification
         type: "",
       });
@@ -103,16 +104,13 @@ export const WeavyNotifications: React.FC = () => {
       // Get initial notification count
       updateNotificationCount();
 
-      // Configure realtime notifications listener
-      weavy.notificationEvents = true;
-
       // Add a realtime notification event listener
-      weavy.host?.addEventListener("wy-notifications", handleNotifications);
+      weavy.host?.addEventListener("wy-notification", handleNotifications);
 
       return () => {
         // Unregister the event listener when the component is unmounted
         weavy.host?.removeEventListener(
-          "wy-notifications",
+          "wy-notification",
           handleNotifications
         );
       };
