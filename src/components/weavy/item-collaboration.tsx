@@ -2,7 +2,7 @@
 import useHash from "@hooks/hash/useHash"
 import { usePageNavigation } from "@hooks/weavy/usePageNavigation"
 import { useGo, useParsed } from "@refinedev/core"
-import { WeavyTypes, WyChat, WyFiles, WyPosts } from "@weavy/uikit-react"
+import { WeavyTypes, WyChat, WyFiles, WyFeed } from "@weavy/uikit-react"
 import { Card } from "antd"
 import { LegacyRef, useEffect, useState } from "react"
 
@@ -14,8 +14,8 @@ export function WeavyItemCollaboration({ id }: { id?: string | number}) {
   // Tab definition
   const tabList = [
     {
-      key: "posts",
-      label: "Feeds",
+      key: "feed",
+      label: "Feed",
     },
     {
       key: "chat",
@@ -29,8 +29,8 @@ export function WeavyItemCollaboration({ id }: { id?: string | number}) {
 
   // Tab content
   const [activeTab, setActiveTab] = useState<string>(() => {
-    // Check the #hash from the URL to show any matching tab, otherwise default to "posts"
-    return tabList.find((tab) => tab.key === hash) ? hash : "posts"
+    // Check the #hash from the URL to show any matching tab, otherwise default to "feed"
+    return tabList.find((tab) => tab.key === hash) ? hash : "feed"
   })
 
 
@@ -38,7 +38,7 @@ export function WeavyItemCollaboration({ id }: { id?: string | number}) {
 
   // We encode the path of each tab into the uid using base-64 encoding to be able to navigate to each tab from notifications.
   const tabContent: Record<string, React.ReactNode> = {
-    posts: <WyPosts uid={`refine:blog-posts:${id}:posts`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyPosts> | undefined} />,
+    feed: <WyFeed uid={`refine:blog-posts:${id}:feed`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyFeed> | undefined} />,
     chat: <WyChat uid={`refine:blog-posts:${id}:chat`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyChat> | undefined} />,
     files: <WyFiles uid={`refine:blog-posts:${id}:files`} ref={componentRefCallback as LegacyRef<WeavyTypes.WyFiles> | undefined} />,
   }
@@ -72,7 +72,7 @@ export function WeavyItemCollaboration({ id }: { id?: string | number}) {
           display: "flex",
           flex: "1 0 480px",
           overflow: "hidden",
-          padding: activeTab === "posts" ? "1rem" : "0",
+          padding: activeTab === "feed" ? "1rem" : "0",
         },
       }}
       tabList={tabList}
